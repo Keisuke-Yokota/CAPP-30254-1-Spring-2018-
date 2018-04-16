@@ -90,4 +90,13 @@ def outlier(dataframe):
     '''
 
 ### 4
-def    
+def discretize(SeriesDataframe, bins):
+    cut_df, bins = pd.cut(SeriesDataframe, bins, retbins=True)  
+    return  cut_df, bins
+
+
+def binarize(SeriesDataframe):
+    from numpy import eye
+    target = np.array(df.iloc[:, 0])
+    one_hot = np.eye(2)[target]
+    return one_hot
