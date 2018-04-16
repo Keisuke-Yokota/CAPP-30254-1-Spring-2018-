@@ -66,17 +66,16 @@ def adj_outlier(dataframe,column_name):
     return df
 
 def outlier_iqr(df):
-    df0 = df[:]
-    for i in range(1,len(df0.columns)):
+    for i in range(1,len(df.columns)):
         col = df.iloc[:,i]
-        q1 = stats.scoreatpercentile(target, 25)
-        q3 = stats.scoreatpercentile(target, 75) 
+        q1 = stats.scoreatpercentile(col, 25)
+        q3 = stats.scoreatpercentile(col, 75) 
         iqr = q3 - q1
         outlier_min = q1 - (iqr) * 1.5
         outlier_max = q3 + (iqr) * 1.5
         col[col < outlier_min] = None
         col[col > outlier_max] = None
-    return df0
+    return df
 
 
 def outlier(dataframe):
@@ -88,4 +87,7 @@ def outlier(dataframe):
     '''
     df['MonthlyIncome'] = df['MonthlyIncome'].fillna(df['MonthlyIncome'].median())
     df['NumberOfDependents'] = df['NumberOfDependents'].fillna(df['NumberOfDependents'].median())
-    '''  
+    '''
+
+### 4
+def    
