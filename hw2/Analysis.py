@@ -15,10 +15,12 @@ from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
+from sklearn.metrics import make_scorer
+from sklearn.model_selection import GridSearchCV
 
 
 ### 1 Read Data
-def load_data(filename='cs-training.csv'):
+def load_data(filename='credit-data.csv'):
     '''
     Load data from a csv file and get dataframe.
     Besides, rename 'NumberOfTime30-59DaysPastDueNotWorse' as 'Less2months',
@@ -31,11 +33,11 @@ def load_data(filename='cs-training.csv'):
     Returns: dataframe
     '''
     df = pd.read_csv(filename, header=0)
-    df = df.rename(columns={'Unnamed: 0':'ID', 
+    df = df.rename(columns={ 
                     'NumberOfTime30-59DaysPastDueNotWorse':'Less2months',
                     'NumberOfTimes90DaysLate':'More3months',
                     'NumberOfTime60-89DaysPastDueNotWorse':'Less3months'})
-    df = df.set_index('ID')
+    df = df.set_index('PersonID')
     return df
 
 
@@ -199,18 +201,51 @@ def dumminize(Dataframe):
 
 
 ### 5 Build Classifier
-def random_tree(x_train, y_train):
+def random_tree(x_train, y_train, best_parameter=False):
     '''
     Build a random tree as a classifier and evaluate
 
     Inputs:
       x_train (dataframe)
       y_train (dataframe)
-
+      best_parameter (boolean)
     '''
-    forest = RandomForestClassifier(random_state=1)
-    forest.fit(x_train, y_train)
+    if not best_parameter:
+        forest = RandomForestClassifier(random_state=1)
+        forest.fit(x_train, y_train)
+    else:
+        best_params = best_parameter
+        forest = RandomForestClassifier(random_state=1, 
+                                max_depth=best_params['max_depth'], 
+                                max_features=best_params['max_features'], 
+                                min_samples_leaf=best_params['min_samples_leaf'],
+                                n_estimators=best_params['n_estimators'])
+        forest.fit(x_train, y_train)
     evaluate(forest, x_train, y_train)
+
+
+
+def tuning(x_train, y_train):
+    '''
+    Tune the parameters of the model to get Best one by setting
+    target score as recall score.
+
+    Inputs:
+      x_train (dataframe)
+      y_train (dataframe)
+    '''    
+    forest_grid_param = {'n_estimators': [10],
+                        'max_features': [1, 2, None],
+                        'max_depth': [1, 5, 10, None],
+                        'min_samples_leaf': [1, 2, 4,]}
+    recall_scoring = make_scorer(recall_score,  pos_label=1)
+    forest_grid_search = GridSearchCV(
+                            RandomForestClassifier(random_state=1), 
+                            forest_grid_param, scoring=recall_scoring, cv=4)
+    forest_grid_search.fit(x_train, y_train)
+    print('Best parameters: {}'.format(forest_grid_search.best_params_))
+    print('Best score: {:.3f}'.format(forest_grid_search.best_score_))
+    return forest_grid_search.best_params_
 
 
 ### 6 Evaluate Classifier
