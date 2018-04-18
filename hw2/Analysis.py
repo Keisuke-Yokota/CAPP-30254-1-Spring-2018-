@@ -21,6 +21,9 @@ from sklearn.metrics import f1_score
 def load_data(filename='cs-training.csv'):
     '''
     Load data from a csv file and get dataframe.
+    Besides, rename 'NumberOfTime30-59DaysPastDueNotWorse' as 'Less2months',
+    'NumberOfTimes90DaysLate' as 'More3months', and 
+    'NumberOfTime60-89DaysPastDueNotWorse' as 'Less3months'.
 
     Inputs:
       filename (string): a name of csv file
