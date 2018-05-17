@@ -141,14 +141,10 @@ def standardize(df, column_list):
 
     Returns: dataframe
     '''
-    for column in column_list:
-        num = column_list.index(column)
-        sc = StandardScaler()
-        x_train_std = sc.fit_transform(df.iloc[:, [num]])
-        x_train_std = pd.DataFrame(x_train_std)
-        x_train_std.index = x_train_std.index + 1
-        x_train_std.columns = df.iloc[:, 1:].columns
-        return x_train_std
+    sc = StandardScaler()
+    x_train_std = sc.fit_transform(df.iloc[:, column_list])
+    x_train_std = pd.DataFrame(x_train_std)
+    return x_train_std
 
 
 def winsorize(df):
