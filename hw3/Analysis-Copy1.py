@@ -131,21 +131,24 @@ def fill_na(df):
     return df
 
 
-def standardize(df):
+def standardize(df, column_list):
     '''
     Standardize value in each columns of the dataframe
 
     Inputs:
       dataframe
+      column_list: list of column name
 
     Returns: dataframe
     '''
-    sc = StandardScaler()
-    x_train_std = sc.fit_transform(df.iloc[:, 1:])
-    x_train_std = pd.DataFrame(x_train_std)
-    x_train_std.index = x_train_std.index + 1
-    x_train_std.columns = df.iloc[:, 1:].columns
-    return x_train_std
+    for column in column_list:
+        num = column_list.index(column)
+        sc = StandardScaler()
+        x_train_std = sc.fit_transform(df.iloc[:, [num]])
+        x_train_std = pd.DataFrame(x_train_std)
+        x_train_std.index = x_train_std.index + 1
+        x_train_std.columns = df.iloc[:, 1:].columns
+        return x_train_std
 
 
 def winsorize(df):
