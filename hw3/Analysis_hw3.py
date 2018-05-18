@@ -469,6 +469,41 @@ def tuning(x_train, y_train, classifier, grid_param, cv=5,
     return grid_search.best_params_, grid_search.best_estimator_
 
 
+def grid_parameters():
+    '''
+    set of grid_parameters for casual trial.
+    
+    e.g.
+    'RF':RandomForestClassifier
+    'LR':LogisticRegression
+    'AB':AdaBoostClassifier
+    'DT':DecisionTreeClassifier
+    'SVM':SVM
+    'KNN':KNeighborsClassifier
+    'BAG':BaggingClassifier
+    '''
+    large_grid = { 
+    'RF':{'n_estimators': [1,10,100,1000,10000], 'max_depth': [1,5,10,20,50,100], 'max_features': ['sqrt','log2'],'min_samples_split': [2,5,10]},
+    'LR': { 'penalty': ['l1','l2'], 'C': [0.00001,0.0001,0.001,0.01,0.1,1,10]},
+    'AB': { 'algorithm': ['SAMME', 'SAMME.R'], 'n_estimators': [1,10,100,1000,10000]},
+    'DT': {'criterion': ['gini', 'entropy'], 'max_depth': [1,5,10,20,50,100], 'max_features': [None, 'sqrt','log2'],'min_samples_split': [2,5,10]},
+    'SVM' :{'C' :[0.00001,0.0001,0.001,0.01,0.1,1,10],'kernel':['linear', 'rbf']},
+    'KNN' :{'n_neighbors': [1,5,10,25,50,100],'weights': ['uniform','distance'],'algorithm': ['auto','ball_tree','kd_tree']},
+    'BAG' :{'n_neighbors': [1,5,10,25,50,100],'max_features': [1,2,5,10]}     
+           }
+    
+    small_grid = { 
+    'RF':{'n_estimators': [100, 10000], 'max_depth': [5,50], 'max_features': ['sqrt','log2'],'min_samples_split': [2,10]},
+    'LR': { 'penalty': ['l1','l2'], 'C': [0.00001,0.001,0.1,1,10]},
+    'AB': { 'algorithm': ['SAMME', 'SAMME.R'], 'n_estimators': [1,10,100,1000,10000]},
+    'DT': {'criterion': ['gini', 'entropy'], 'max_depth': [1,5,10,20,50,100], 'max_features': [None,'sqrt','log2'],'min_samples_split': [2,5,10]},
+    'SVM' :{'C' :[0.00001,0.0001,0.001,0.01,0.1,1,10],'kernel':['linear', 'rbf']},
+    'KNN' :{'n_neighbors': [1,5,10,25,50,100],'weights': ['uniform','distance'],'algorithm': ['auto','ball_tree','kd_tree']},
+    'BAG' :{'n_neighbors': [1,5,10,25,50,100],'max_features': [2,10]}     
+           }
+    return large_grid, small_grid
+
+
 ### 6 Evaluate Classifier
 def evaluate(classifier, x_train, y_train, cv):
     '''
@@ -496,6 +531,9 @@ def evaluate(classifier, x_train, y_train, cv):
                     f1_score(y_train, classifier.predict(x_train))))
     print('cross_validation: {:.3f}'.format(
                     cross_val_score(classifier, x_train, y_train, cv=cv)))
+    plot_roc(classifier, x_train, y_train)
+    plot_precision_recall(classifier, x_train, y_train)
+
 
 
 def plot_feature_importance:
