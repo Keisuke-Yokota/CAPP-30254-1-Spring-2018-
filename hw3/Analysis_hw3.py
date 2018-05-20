@@ -403,7 +403,7 @@ def decision_tree(x_train, y_train, criterion, max_features, max_depth,
                                 criterion=best_params['criterion'])
         tree.fit(x_train, y_train)
     evaluate(tree, x_train, y_train, cv)
-    
+
 
 def random_forest(x_train, y_train, n_estimators, max_features, max_depth,
                  min_samples_split, cv=5, best_parameter=False):
@@ -498,7 +498,7 @@ def tuning(x_train, y_train, classifier, grid_param, cv=5,
     grid_search = GridSearchCV(
                             classifier, 
                             grid_param,
-                            scoring=make_scorer(recall_score,  pos_label=1),
+                            scoring=scoring,
                             cv=cv,
                             n_jobs = -1)
     grid_search.fit(x_train, y_train)
@@ -635,7 +635,8 @@ def plot_precision_recall(classifier, x_train, y_train):
     print("Area Under Curve: %0.2f" % area)
 
 
-def temporal_validation(start_time, end_time):
+def temporal_validation(start_time, end_time, 
+                        prediction_window, prediction_windows):
     '''
     I couldn't come up with any good ideas about temporal validation, 
     I would like to borrow Professor Rayid Ghani's function and modified it a little
@@ -643,7 +644,8 @@ def temporal_validation(start_time, end_time):
     '''
     start_time_date = datetime.strptime(start_time, '%Y-%m-%d')
     end_time_date = datetime.strptime(end_time, '%Y-%m-%d')
-
+#    prediction_windows = [6, 12]
+#    update_window = 12
     lst = []
 
     for prediction_window in prediction_windows:
