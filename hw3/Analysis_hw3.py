@@ -237,12 +237,15 @@ def reduce_dimension(list_n_components, x_train):
       x_train: dataframe
 
     '''
+    lst = []
     for i in list_n_components:
         lsa = TruncatedSVD(n_components=i,random_state = 0)
-        lsa.fit_transform(x_train) 
+        reduced_features = lsa.fit_transform(x_train) 
+        lst.append(reduced_features)
         print("""After Reducing to # of {0},
                  sum of explained variance ratio is {1}""".format(
                     i,round((sum(lsa.explained_variance_ratio_)),2)))
+    return lst
 
 
 ### 4 Generate feature/predictor
