@@ -35,7 +35,7 @@ from sklearn.feature_selection import SelectFromModel
 
 
 ### 1 Read Data
-def load_data(filename='credit-data.csv'):
+def load_data(filename='dis_discreted_hw3.csv'):
     '''
     Load data from a csv file and get dataframe.
     Besides, rename 'NumberOfTime30-59DaysPastDueNotWorse' as 'Less2months',
@@ -48,11 +48,7 @@ def load_data(filename='credit-data.csv'):
     Returns: dataframe
     '''
     df = pd.read_csv(filename, header=0)
-    df = df.rename(columns={ 
-                    'NumberOfTime30-59DaysPastDueNotWorse':'Less2months',
-                    'NumberOfTimes90DaysLate':'More3months',
-                    'NumberOfTime60-89DaysPastDueNotWorse':'Less3months'})
-    df = df.set_index('PersonID')
+    df = df.drop(["Unnamed: 0"],axis=1) 
     return df
 
 
@@ -61,8 +57,47 @@ def make_labels(x):
         return 1
     elif x == 't':
         return 0
-    else:
-        return -1
+
+
+def make_labels2(x):
+    if x == 'low poverty':
+        return 0
+    elif x == 'moderate poverty':
+        return 1
+    elif x == 'high poverty':
+        return 2        
+    elif x == 'highest poverty':
+        return 3
+
+def make_labels3(x):
+    if x == 'Grades PreK-2':
+        return 0
+    elif x == 'Grades 3-5':
+        return 1
+    elif x == 'Grades 6-8':
+        return 2        
+    elif x == 'Grades 9-12':
+        return 3
+
+
+def make_labels4(x):
+    if x == 'Mrs.':
+        return 0
+    elif x == 'Ms.':
+        return 1
+    elif x == 'Mr.':
+        return 2        
+    elif x == 'Dr.':
+        return 3
+
+
+def make_labels5(x):
+    if x == 'suburban':
+        return 0
+    elif x == 'urban':
+        return 1
+    elif x == 'rural':
+        return 2        
 
 
 ### 2 Explore Data
@@ -87,7 +122,7 @@ def summary_y(df):
 
     Returns: summary stats table of variables in the dataframe
     '''
-    return df.iloc[:, 0].value_counts()
+    return df.iloc[:, 37].value_counts()
 
 
 def corr(df):
@@ -535,8 +570,7 @@ def evaluate(classifier, x_train, y_train, cv):
     plot_precision_recall(classifier, x_train, y_train)
 
 
-
-def plot_feature_importance:
+def plot_feature_importance(classifier, x_train):
     values, names = zip(*sorted(
                     zip(classifier.feature_importances_,
                         x_train.columns)))
@@ -616,7 +650,8 @@ def temporal_validation(start_time, end_time):
             train_end_time = test_start_time  - relativedelta(days=+1) # minus 1 day
             train_start_time = train_end_time - relativedelta(months=+prediction_window)
             while (train_start_time >= start_time_date ):
-                print train_start_time,train_end_time,test_start_time,test_end_time, prediction_window
+                print(train_start_time,train_end_time,test_start_time,
+                      test_end_time, prediction_window)
                 train_start_time -= relativedelta(months=+prediction_window)
                 # call function to get data
                 train_set, test_set = extract_train_test_sets (train_start_time,
@@ -627,4 +662,4 @@ def temporal_validation(start_time, end_time):
                 # fit on train data
                 # predict on test data
             test_end_time -= relativedelta(months=+update_window)
-      return lst
+    return lst
