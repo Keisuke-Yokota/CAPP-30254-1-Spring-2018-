@@ -347,7 +347,7 @@ def knn(x_train, y_train, weights='distance', n_neighbors=1,
     '''
     if not best_parameter:
         knn_model = KNeighborsClassifier(n_neighbors=n_neighbors
-                                        , weights='distance'
+                                        , weights=weights
                                         , algorithm=algorithm)
         knn_model.fit(x_train,y_train)
     else:
@@ -402,8 +402,8 @@ def decision_tree(x_train, y_train, criterion, max_features, max_depth,
                                 min_samples_split=best_params['min_samples_split'],
                                 criterion=best_params['criterion'])
         tree.fit(x_train, y_train)
-    evaluate(forest, x_train, y_train, cv)
-
+    evaluate(tree, x_train, y_train, cv)
+    
 
 def random_forest(x_train, y_train, n_estimators, max_features, max_depth,
                  min_samples_split, cv=5, best_parameter=False):
@@ -498,7 +498,7 @@ def tuning(x_train, y_train, classifier, grid_param, cv=5,
     grid_search = GridSearchCV(
                             classifier, 
                             grid_param,
-                            scoring=recall_scoring,
+                            scoring=make_scorer(recall_score,  pos_label=1),
                             cv=cv,
                             n_jobs = -1)
     grid_search.fit(x_train, y_train)
