@@ -636,7 +636,7 @@ def plot_precision_recall(classifier, x_train, y_train):
 
 
 def temporal_validation(start_time, end_time, 
-                        prediction_window, prediction_windows):
+                        prediction_windows, update_window):
     '''
     I couldn't come up with any good ideas about temporal validation, 
     I would like to borrow Professor Rayid Ghani's function and modified it a little
